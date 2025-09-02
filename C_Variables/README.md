@@ -1,4 +1,7 @@
-C Variables — Quick Guide
+C Variables — Names, Types, Initialization & Casting
+
+A quick, copy-friendly reference for your README.md.
+
 ✅ Naming Rules
 
 Letters, digits, and underscores only: A–Z, a–z, 0–9, _
@@ -21,11 +24,13 @@ int _temp;         // ⚠️ allowed, but avoid leading underscore
 
 🧱 Core Data Types
 
-int — integers (…,-2, -1, 0, 1, 2,…)
+The main built-ins you’ll use most:
+
+int — whole numbers
 
 float — single-precision real numbers
 
-double— double-precision real numbers
+double — double-precision real numbers
 
 char — single byte character
 
@@ -41,21 +46,21 @@ char initial = 'D';             // single quotes for a single character
 Variables can be initialized at declaration or assigned later.
 
 int a = 10;        // declaration + initialization
-int b;             // declaration
-b = 20;            // assignment
+int b;             // declaration only
+b = 20;            // assignment later
 
-int x = 1, y = 2, z = 3;  // multiple in one line (use judiciously)
+int x = 1, y = 2, z = 3;  // multiple declarations (use judiciously)
 
 
-Heads-up: Local variables are not automatically initialized in C. Using an uninitialized variable is undefined behavior.
+Heads-up: Local variables are not auto-initialized in C. Using an uninitialized variable is undefined behavior.
 
 🔀 Casting (Type Conversion)
 
-C performs implicit conversions in expressions and supports explicit casts.
+C does implicit conversions in expressions and supports explicit casts.
 
 Implicit
 
-double d = 5;        // int 5 is implicitly converted to double 5.0
+double d = 5;        // int 5 implicitly becomes 5.0
 
 
 Explicit
@@ -71,12 +76,12 @@ Common gotcha: integer division
 int sum = 7;
 int n = 2;
 
-double avg_bad = sum / n;             // 7/2 == 3 (int division) → 3.0
+double avg_bad = sum / n;             // 7/2 == 3 (int) → 3.0
 double avg_ok  = (double)sum / n;     // 7.0/2 == 3.5
 
 🧩 Quick Checklist
 
- Name starts with a letter, contains only letters/digits/underscores
+ Identifier starts with a letter, uses only letters/digits/underscores
 
  Not a keyword
 
@@ -84,10 +89,9 @@ double avg_ok  = (double)sum / n;     // 7.0/2 == 3.5
 
  Use explicit casts to control numeric behavior (esp. division)
 
- Avoid leading underscores in identifiers
+ Avoid leading underscores in names
 
-Mini Demo
-
+🧪 Mini Demo
 #include <stdio.h>
 
 int main(void) {
@@ -102,3 +106,5 @@ int main(void) {
            count, total, average, letter);
     return 0;
 }
+
+gcc main.c -o vars && ./vars
