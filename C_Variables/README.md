@@ -61,4 +61,3 @@ C has several fundamental types and modifiers. Sizes are implementation‑define
 | `size_t`              | `size_t n = 10;`        | `%zu`                       |
 | `char` (as character) | `char c = 'A';`         | `%c`                        |
 | `float` / `double`    | `double d = 3.14;`      | `%f` (both print as double) |
-| \`lon                 |                         |                             |
