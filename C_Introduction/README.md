@@ -1,7 +1,5 @@
 # C Basics: Syntax, Escape Sequences, Comments, and `gcc`
 
-A quick, copy‑friendly reference for C newcomers. Drop this into your `README.md`.
-
 ---
 
 ## Syntax in C
@@ -131,3 +129,4 @@ gcc main.c -o hello && ./hello
 ---
 
 *Happy coding!* 🚀
+
