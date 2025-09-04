@@ -9,7 +9,6 @@ void copy(char* dst, char* src){
     src++;
   }
   *dst = '\0';
-  printf("%s", dst);
 }
  
 int main(){
