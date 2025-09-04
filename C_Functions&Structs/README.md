@@ -197,6 +197,261 @@ void print_sum(int x, int y) {
 void increment_in_place(int *x) {
     if (x) { (*x)++; }
 }
+
+```bash
+gcc main.c -o demo && ./demo
+```
+---
+
+# C Basics: Structures (`struct`)
+
+---
+
+## Defining a Structure
+
+Use the `struct` keyword followed by a name and a brace‑enclosed list of **member variables** (not initialized in the definition).
+
+```c
+// `struct` keyword and structure tag
+struct Person {
+    char *name; // pointer to character data (string)
+    int   age;
+};
+```
+
+> ℹ️ The **relative order** of members is preserved, but compilers may insert **padding** for alignment. Use `sizeof` to inspect actual size.
+
+---
+
+## Initializing Structures
+
+Initialize with **designated initializers** (C99+) or **positional** order.
+
+```c
+// Structure type
+struct Person {
+    char *name;
+    int   age;
+};
+
+// Designated (order‑independent)
+struct Person person1 = { .name = "Cosmo", .age = 36 };
+
+// Positional (must follow member order)
+struct Person person2 = { "George", 29 };
+
+// Compound literal (C99+), e.g., for on‑the‑fly values
+struct Person p = (struct Person){ .name = "Elaine", .age = 35 };
+
+// Zero‑initialize all members
+struct Person empty = {0};
+```
+
+> ✅ Designated initializers improve clarity; use them when there are many fields.
+
+---
+
+## Custom Data Types with `typedef`
+
+`typedef` lets you omit the `struct` keyword at use‑sites.
+
+```c
+typedef struct Person {
+    char *name;
+    int   age;
+} Person; // now `Person` is a type name
+
+Person kramer = { .name = "Kramer", .age = 36 };
+```
+
+---
+
+## Grouping Heterogeneous Data
+
+Structures group different types into a single logical unit.
+
+```c
+struct Person {
+    char *name;
+    int   age;
+    char  middleInitial; // single character
+};
+```
+
+> ⚠️ Use single quotes for single characters (e.g., `'C'`), not string literals (`"C"`).
+
+---
+
+## Accessing Members: Dot and Arrow
+
+* Use the **dot** operator (`.`) with a structure **object**.
+* Use the **arrow** operator (`->`) with a **pointer** to a structure. (`p->x` is the same as `(*p).x`.)
+
+```c
+struct Person person1 = { .name = "George", .age = 28, .middleInitial = 'C' };
+printf("My name is %s\n", person1.name); // dot
+
+struct Person *personPtr = &person1;
+printf("Age: %d\n", personPtr->age);     // arrow
+```
+
+> 🔎 Precedence reminder: write `(*p).x`, not `*p.x`.
+
+---
+
+## Structure Pointers & Dynamic Allocation
+
+Create pointers to existing objects or allocate dynamically.
+
+```c
+struct Person jerry = { "Jerry", 29 };
+struct Person *pj = &jerry; // pointer to existing object
+
+#include <stdlib.h>
+struct Person *dyn = malloc(sizeof *dyn);
+if (dyn) {
+    dyn->name = "Newman"; // for demo; string literal has static storage duration
+    dyn->age = 37;
+}
+// ... use dyn ...
+free(dyn);
+```
+
+> 📌 If you allocate or duplicate `name` dynamically, remember to `free` it later (and include `<string.h>` for copy helpers). `strdup` is POSIX, not ISO C.
+
+---
+
+## Passing Structures to Functions
+
+By **value** (copies the entire struct) or by **pointer** (lets the callee mutate the original).
+
+```c
+// By value: read‑only view of the caller's data
+void print_person(struct Person p) {
+    printf("%s (%d)\n", p.name, p.age);
+}
+
+// By pointer: can modify caller state; add const for read‑only
+void have_birthday(struct Person *p) {
+    if (p) { p->age++; }
+}
+
+void show(const struct Person *p) { // cannot modify *p
+    if (p) printf("%s is %d\n", p->name, p->age);
+}
+```
+
+---
+
+## Function Prototypes with Structures
+
+Declare functions that use structure types so calls are checked for correctness.
+
+```c
+struct Person; // optional forward declaration for pointers
+void myFunc(struct Person person1);
+void myFuncPtr(struct Person *person1Pointer);
+```
+
+---
+
+## Arrays, Nested, and Self‑Referential Structures
+
+```c
+// Array of structures
+struct Person people[3] = {
+    { "Jerry", 29 }, { "George", 29 }, { "Elaine", 28 }
+};
+
+// Nested structure
+typedef struct {
+    struct Person members[10];
+    size_t count;
+} Team;
+
+// Self‑referential via pointer (common in linked lists)
+struct Node {
+    int value;
+    struct Node *next; // pointer allows recursive shape
+};
+```
+
+---
+
+## Memory Layout & Padding (Quick Note)
+
+Compilers may insert padding between members. This affects `sizeof` and binary I/O.
+
+```c
+#include <stddef.h> // offsetof
+struct Example { char c; int i; };
+printf("sizeof=%zu, off(i)=%zu\n", sizeof(struct Example), offsetof(struct Example, i));
+```
+
+> 🧠 Avoid comparing whole structs with `memcmp` (padding bytes may differ). Compare member‑wise. Simple **assignment** (`a = b;`) copies all members correctly.
+
+---
+
+## Flexible Array Members (C99+)
+
+Use a trailing unsized array to store variable‑length data contiguously.
+
+```c
+typedef struct {
+    size_t len;
+    unsigned char data[]; // flexible array member (no size)
+} Buffer;
+
+Buffer *make_buf(size_t n) {
+    Buffer *b = malloc(sizeof *b + n);
+    if (b) { b->len = n; }
+    return b;
+}
+```
+
+---
+
+## Quick Tips
+
+* Prefer `typedef` for ergonomics, but keep the original `struct` name for debugging clarity.
+* Initialize with designated initializers for readability.
+* Be explicit about ownership of pointer members (who allocates/frees?).
+* Pass large structs by pointer for performance; add `const` when not mutating.
+* Use single quotes for `char` members; strings are `char *` or fixed arrays `char name[32]`.
+
+```bash
+gcc -Wall -Wextra -Wpedantic main.c -o structs
+```
+
+---
+
+### Minimal Example
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    const char *name; // points to string literal in this demo
+    int         age;
+} Person;
+
+void birthday(Person *p) {
+    if (p) { p->age++; }
+}
+
+int main(void)
+{
+    Person p1 = { .name = "Morty", .age = 13 };
+    Person p2 = { "Summer", 17 };
+
+    printf("%s is %d\n", p1.name, p1.age);   // dot
+    Person *pp = &p2;                         // pointer
+    birthday(pp);                             // mutate via pointer
+    printf("%s is now %d\n", pp->name, pp->age); // arrow
+
+    return 0;
+}
 ```
 
 ```bash
@@ -206,3 +461,4 @@ gcc main.c -o demo && ./demo
 ---
 
 *Happy coding!* 🚀
+
