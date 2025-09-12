@@ -1,4 +1,4 @@
-from gpiozero import LED
+from gpiozero import LED # type: ignore[reportMissingImports]
 from time import sleep
 
 led14 = LED(14)
