@@ -20,7 +20,7 @@ C · Bash · Unix fundamentals · systems programming basics · security‑minde
 * **Networking Basics** — sockets at a high level, `curl`, HTTP basics.
 * **Debugging & Tooling** — `gdb`, `valgrind`, sanitizers (when applicable).
 * **Security Basics** — input validation, bounds checks, least privilege.
-* **Mini‑tools** — small utilities that turn lessons into practice.
+
 
 ## 🎯 Goals
 
